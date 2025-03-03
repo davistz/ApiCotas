@@ -1,3 +1,5 @@
+using ApiCotas.Cotas;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer(); 
@@ -17,5 +19,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.AddRoutesCotas();
 
 app.Run();
