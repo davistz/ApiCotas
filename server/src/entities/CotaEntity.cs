@@ -14,29 +14,38 @@ public class CotaEntity
     
     [Required]
     [Column("numeroCota")]
-    public double? NumeroCota { get; set; }
+    public double NumeroCota { get; set; }
     
     [Column("valor")]
-    public double? Valor { get; set; }
+    public decimal Valor { get; set; }
     
     [Column("status")]
-    public StatusCota? Status { get; set; }
+    public StatusCota Status { get; set; }
 
     [Column("data_create")]
-    public DateTime DataCriacao { get; set; }
+    public DateTime DataCriacao { get; init; } = DateTime.Now;
     
     [Column("data_update")]
-    public DateTime DataUpdate { get; set; }
+    public DateTime DataUpdate { get; set; } = DateTime.Now;
 
     public CotaEntity() { }
-    public CotaEntity(double? numeroCota, double? valor, StatusCota? status, DateTime dataCriacao, DateTime dataUpdate)
+    public CotaEntity(double numeroCota, decimal valor, StatusCota status)
     {
         NumeroCota = numeroCota;
         Valor = valor;
         Status = status;
-        DataCriacao = dataCriacao;
-        DataUpdate = dataUpdate;
+       
     }
-    
-    
+
+    public void AtualizarCota(double numeroCota, decimal valor, StatusCota status)
+    {
+        NumeroCota = numeroCota;
+        Valor = valor;
+        Status = status;
+    }
+
+    public void DesativarCota()
+    {
+        Status = StatusCota.Inativa;
+    }
 }

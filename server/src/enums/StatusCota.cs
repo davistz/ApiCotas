@@ -6,6 +6,5 @@ namespace ApiCotas.Cotas;
 public enum StatusCota
 {
     Ativa,
-    Contemplada,
     Inativa
 }
