@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCotas.Cotas;
 
-public static class CotasRoutes
+public static class CotasController
 {
     public static void AddRoutesCotas(this WebApplication app)
     {
         var rotasCotas = app.MapGroup("");
 
-        rotasCotas.MapPost("/cotas", async (AddCotaRequest request, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapPost("/grupos/cotas", async (CotaRequest request, DataContext context, CancellationToken ct) =>
         {
             var existingCota = await context.Cotas.AnyAsync(cota => cota.NumeroCota == request.numeroCota, ct);
 
@@ -29,7 +29,7 @@ public static class CotasRoutes
             
         });
         
-        rotasCotas.MapGet("/cotas", async (DataContext context, CancellationToken ct) =>
+        rotasCotas.MapGet("/grupos/cotas", async (DataContext context, CancellationToken ct) =>
         {
             var cotas = await context
                 .Cotas
@@ -39,7 +39,7 @@ public static class CotasRoutes
             return Results.Ok(cotas);
         });
 
-        rotasCotas.MapPut("/cotas/{id}", async (String id, UpdateCotaRequest request, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapPut("/grupos/cotas/{id}", async (String id, CotaRequest request, DataContext context, CancellationToken ct) =>
         {
             var cota = await context.Cotas
                 .SingleOrDefaultAsync(cota => cota.Id == id);
@@ -55,7 +55,7 @@ public static class CotasRoutes
             return Results.Ok(new CotaDTO(cota.Id, cota.ConsorcioId, cota.NumeroCota, cota.Valor));
         });
 
-        rotasCotas.MapDelete("/cotas/{id}", async (String id, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapDelete("/grupos/cotas/{id}", async (String id, DataContext context, CancellationToken ct) =>
         {
             var cota = await context.Cotas.SingleOrDefaultAsync(cota => cota.Id == id);
             

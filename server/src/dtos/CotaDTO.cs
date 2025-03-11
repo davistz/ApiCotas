@@ -1,5 +1,3 @@
-﻿using ApiCotas.Cotas;
+﻿namespace ApiCotas.dtos;
 
-namespace ApiCotas.dtos;
-
-public record CotaDTO(String Id,String ConsorcioId, double NumeroCota, decimal Valor);
+public record CotaDTO(string Id,String ConsorcioId, double NumeroCota, decimal Valor);

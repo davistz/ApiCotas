@@ -21,6 +21,24 @@ public class UserEntity
     
     [Column("data_update")]
     public DateTime DataUpdate { get; set; } = DateTime.Now;
+
+    public UserEntity()
+    {
+    }
+
+    public UserEntity(string nome, string email, string senha)
+    {
+        Nome = nome;
+        Email = email;
+        Senha = senha;
+    }
+
+    public void AtualizarUser(string nome, string email, string senha)
+    {
+        Email = email;
+        Nome = nome;
+        Senha = senha;
+    }
     
     public virtual ICollection<UsuarioConsorcio> UsuarioConsorcios { get; set; } = new List<UsuarioConsorcio>();
 }

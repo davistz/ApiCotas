@@ -1,4 +1,5 @@
 using ApiCotas.Cotas;
+using ApiCotas.Users;
 using dataContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.AddRoutesConsorcios();
 app.AddRoutesCotas();
+app.RoutesUsers();
 
 app.Run();

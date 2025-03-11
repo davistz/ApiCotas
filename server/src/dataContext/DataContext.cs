@@ -8,7 +8,7 @@ namespace dataContext
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<CotaEntity> Cotas { get; set; }
-        public DbSet<ConsorcioEntity> Consorcios { get; set; }
+        public DbSet<GrupoEntity> Consorcios { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<UsuarioConsorcio> UserConsorcios { get; set; }
 
@@ -23,10 +23,7 @@ namespace dataContext
                 .WithMany(u => u.UsuarioConsorcios) 
                 .HasForeignKey(uc => uc.UsuarioId);
 
-            modelBuilder.Entity<UsuarioConsorcio>()
-                .HasOne(uc => uc.Consorcio)
-                .WithMany(c => c.UsuarioConsorcios)
-                .HasForeignKey(uc => uc.ConsorcioId);
+            
 
           
             modelBuilder.Entity<CotaEntity>()
@@ -35,7 +32,7 @@ namespace dataContext
                 .IsRequired(); 
 
           
-            modelBuilder.Entity<ConsorcioEntity>()
+            modelBuilder.Entity<GrupoEntity>()
                 .Property(c => c.ValorTotal)
                 .HasColumnType("decimal(18, 2)")
                 .IsRequired(); 

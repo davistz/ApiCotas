@@ -2,7 +2,7 @@
 
 namespace ApiCotas.Cotas;
 
-public class ConsorcioEntity
+public class GrupoEntity
 {
     [Column("id")]
     public string Id { get; init; } = Guid.NewGuid().ToString();

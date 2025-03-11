@@ -12,6 +12,6 @@ public class UsuarioConsorcio
 
     public virtual UserEntity Usuario { get; set; }
 
-    public virtual ConsorcioEntity Consorcio { get; set; }
+    public virtual GrupoEntity Consorcio { get; set; }
 }
 

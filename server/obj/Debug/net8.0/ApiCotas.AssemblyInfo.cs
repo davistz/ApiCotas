@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ApiCotas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa89216fcedf1f7e2c5473147d5716fe02e2bcd4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+430ced3ea28ba80fea77daf0ec67fd7182bce13f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ApiCotas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ApiCotas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
