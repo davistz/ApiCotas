@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 
 public class AuthService
 {
-    
     private readonly byte[] key = new byte[32];
     private readonly string base64Key;
 
