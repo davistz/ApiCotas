@@ -38,6 +38,19 @@ public static class UserController
                 .ToListAsync(ct);
             return Results.Ok(users);
         });
+        
+        userRotas.MapGet("/users/{userId}/grupos", async (string userId, DataContext context, CancellationToken ct) =>
+        {
+            var usuario = await context.Users.Include(u => u.GruposCriados)
+                .SingleOrDefaultAsync(u => u.Id == userId, ct);
+
+            if (usuario == null)
+            {
+                return Results.NotFound("Usuário não encontrado.");
+            }
+
+            return Results.Ok(usuario.GruposCriados);
+        });
 
         userRotas.MapPut("/users/{id}", async (String id, UserRequest request, DataContext context, CancellationToken ct) =>
         {

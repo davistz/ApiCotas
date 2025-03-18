@@ -1,6 +1,4 @@
 ﻿namespace ApiCotas;
 
-public class LoginRequest
-{
+public record LoginRequest(string Email, string Senha);
     
-}

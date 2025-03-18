@@ -1,6 +1,4 @@
-﻿version: '3.8'
-
-services:
+﻿services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server
     environment:
@@ -13,14 +11,15 @@ services:
 
   webapp:
     build:
-      context: . 
-      dockerfile: Dockerfile 
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:80" 
     depends_on:
       - sqlserver
     environment:
-      - ConnectionStrings__DefaultConnection=Server=localhost;Database=CotasDB;User Id=sa;Password=Root123!;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ApiCotasDB;User Id=sa;Password=Root123!;TrustServerCertificate=True;
 
 volumes:
   sqlserverdata:
+    

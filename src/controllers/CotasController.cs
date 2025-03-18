@@ -6,27 +6,35 @@ namespace ApiCotas.Cotas;
 
 public static class CotasController
 {
-    public static void AddRoutesCotas(this WebApplication app)
+    public static void RoutesCotas(this WebApplication app)
     {
         var rotasCotas = app.MapGroup("");
 
-        rotasCotas.MapPost("/grupos/cotas", async (CotaRequest request, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapPost("/{consorcioId}/cotas", async (string consorcioId, CotaRequest request, DataContext context, CancellationToken ct) =>
         {
+            var grupo = await context.Consorcios.FindAsync(consorcioId); 
+
+            if (grupo == null)
+            {
+                return Results.NotFound("Grupo não encontrado.");
+            }
+
+            
             var existingCota = await context.Cotas.AnyAsync(cota => cota.NumeroCota == request.numeroCota, ct);
 
             if (existingCota)
             {
                 return Results.Conflict("Já existe uma cota com este número!");
             }
+
             
-            var novaCota = new CotaEntity(request.numeroCota, request.valor, request.status);
+            var novaCota = new CotaEntity(request.numeroCota, request.valor, consorcioId, request.status);
             await context.Cotas.AddAsync(novaCota, ct);
             await context.SaveChangesAsync(ct);
-            
+
             var cotaRetorno = new CotaDTO(novaCota.Id, novaCota.ConsorcioId, novaCota.NumeroCota, novaCota.Valor);
-            
-            return Results.Ok(cotaRetorno);
-            
+
+            return Results.Created($"/grupos/{consorcioId}/cotas/{novaCota.Id}", cotaRetorno);
         });
         
         rotasCotas.MapGet("/grupos/cotas", async (DataContext context, CancellationToken ct) =>

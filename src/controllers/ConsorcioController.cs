@@ -1,4 +1,5 @@
 ﻿
+using System.IdentityModel.Tokens.Jwt;
 using ApiCotas.dtos;
 using dataContext; 
 using Microsoft.EntityFrameworkCore;
@@ -7,27 +8,63 @@ namespace ApiCotas.Cotas;
 
 public static class ConsorcioController
 {
-    public static void AddRoutesConsorcios(this WebApplication app)
+    public static void RoutesConsorcios(this WebApplication app)
     {
         var rotasConsorcios = app.MapGroup("");
 
-        rotasConsorcios.MapPost("/grupo", async (GrupoRequest request, DataContext context, CancellationToken ct) =>
+        rotasConsorcios.MapPost("/grupo", async (GrupoRequest request, DataContext context, HttpContext httpContext, CancellationToken ct) =>
         {
+            var authorization = httpContext.Request.Headers["Authorization"].ToString();
+            var token = authorization.StartsWith("Bearer ") ? authorization.Substring("Bearer ".Length).Trim() : null;
+
+            if (token == null)
+            {
+                return Results.Unauthorized();
+            }
+            
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId"); 
+            var userNameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserName");
+            
+            if (userIdClaim == null)
+            {
+                return Results.Unauthorized();
+            }
+            if (userNameClaim == null)
+            {
+                return Results.Unauthorized();
+            }
+            
+            var userId = userIdClaim.Value;
+            var userName = userNameClaim.Value;
+            
+            var usuario = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
+            if (usuario == null)
+            {
+                return Results.NotFound("Usuário inexistente para criar o grupo");
+            }
+            
             var novoConsorcio = new GrupoEntity
             {
                 Nome = request.Nome,
                 ValorTotal = request.ValorTotal,
                 NumeroParticipantes = request.NumeroParticipantes,
                 DataCreate = DateTime.UtcNow,
-                DataUpdate = DateTime.UtcNow
+                DataUpdate = DateTime.UtcNow,
+                CriadorId = userId, 
+                CriadorNome = userName 
             };
-
+            
             await context.Consorcios.AddAsync(novoConsorcio, ct);
             await context.SaveChangesAsync(ct);
+            usuario.GruposCriados.Add(novoConsorcio);
 
-            var consorcioRetorno = new ConsorcioDTO(novoConsorcio.Id, novoConsorcio.Nome, novoConsorcio.ValorTotal, novoConsorcio.NumeroParticipantes);
-            
-            return Results.Created($"/grupo/{novoConsorcio.Id}", novoConsorcio);
+
+            var consorcioRetorno = new ConsorcioDTO(novoConsorcio.Id, novoConsorcio.Nome, novoConsorcio.ValorTotal,
+                novoConsorcio.NumeroParticipantes, novoConsorcio.CriadorNome, novoConsorcio.CriadorId);
+    
+            return Results.Created($"/grupo/{novoConsorcio.Id}", consorcioRetorno);
         });
         
         rotasConsorcios.MapGet("/grupo", async (DataContext context, CancellationToken ct) =>
@@ -40,6 +77,8 @@ public static class ConsorcioController
                     consorcio.Nome,
                     consorcio.ValorTotal,
                     consorcio.NumeroParticipantes,
+                    consorcio.CriadorId,
+                    consorcio.CriadorNome,
                     consorcio.DataCreate,
                     consorcio.DataUpdate
                 })

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\ApiCotas.props" />
-</Project>

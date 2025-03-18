@@ -1,0 +1,42 @@
+﻿# Ignorar diretórios de build
+bin/
+obj/
+
+# Ignorar arquivos de usuário do Visual Studio e Rider
+*.user
+*.userosscache
+*.sln.DotSettings.user
+*.sln.docstates
+
+# Ignorar arquivos de cache do NuGet
+project.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+*.dgspec.json
+ 
+.vs/
+.vscode/
+*.code-workspace
+.idea/
+ 
+ %SystemDrive%
+
+.env
+appsettings.Development.json
+ 
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+ 
+*.suo
+*.user
+*.userosscache
+*.sln.docstates

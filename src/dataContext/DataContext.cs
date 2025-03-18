@@ -6,31 +6,17 @@ namespace dataContext
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
         public DbSet<CotaEntity> Cotas { get; set; }
         public DbSet<GrupoEntity> Consorcios { get; set; }
         public DbSet<UserEntity> Users { get; set; }
-        public DbSet<UsuarioConsorcio> UserConsorcios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
-            modelBuilder.Entity<UsuarioConsorcio>()
-                .HasKey(uc => new { uc.UsuarioId, uc.ConsorcioId });
 
-            modelBuilder.Entity<UsuarioConsorcio>()
-                .HasOne(uc => uc.Usuario)
-                .WithMany(u => u.UsuarioConsorcios) 
-                .HasForeignKey(uc => uc.UsuarioId);
-
-            
-
-          
             modelBuilder.Entity<CotaEntity>()
                 .Property(c => c.Valor)
                 .HasColumnType("decimal(18, 2)") 
                 .IsRequired(); 
-
           
             modelBuilder.Entity<GrupoEntity>()
                 .Property(c => c.ValorTotal)

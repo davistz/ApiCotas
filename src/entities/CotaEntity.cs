@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ApiCotas.Cotas;
+using ApiCotas.Cotas;
 
 public class CotaEntity
 {
-    [Key]
+    
     [Column("id")]
     public string? Id { get; init; } = Guid.NewGuid().ToString();
     
-    [Column("consorcioId")]
-    public string? ConsorcioId { get; set; } = Guid.NewGuid().ToString();
-    
+    [Column("consorcioId")] 
+    public string ConsorcioId { get; set; }  
+
     [Required]
     [Column("numeroCota")]
     public double NumeroCota { get; set; }
@@ -27,14 +26,17 @@ public class CotaEntity
     
     [Column("data_update")]
     public DateTime DataUpdate { get; set; } = DateTime.Now;
+    
+    public virtual GrupoEntity Consorcio { get; set; }
 
     public CotaEntity() { }
-    public CotaEntity(double numeroCota, decimal valor, StatusCota status)
+
+    public CotaEntity(double numeroCota, decimal valor, string consorcioId, StatusCota status) 
     {
         NumeroCota = numeroCota;
         Valor = valor;
+        ConsorcioId = consorcioId; 
         Status = status;
-       
     }
 
     public void AtualizarCota(double numeroCota, decimal valor, StatusCota status)
