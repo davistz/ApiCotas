@@ -3,12 +3,20 @@ using ApiCotas.Cotas;
 using ApiCotas.Users;
 using dataContext;
 using Microsoft.EntityFrameworkCore;
-using ApiCotas.Middlewares; // Adicione o namespace do seu middleware
+using ApiCotas.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddTransient<AuthService>();
 
-builder.Services.AddEndpointsApiExplorer(); 
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+Console.WriteLine($"Chave JWT: {jwtKey}");
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new Exception("A chave JWT não foi configurada. Verifique o appsettings.json.");
+}
+builder.Services.AddSingleton(new AuthService(jwtKey));
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
@@ -32,13 +40,12 @@ builder.Services.AddDbContext<DataContext>(options =>
 var app = builder.Build();
 app.UseCors("AllowAllOrigins");
 
-// Adicione o middleware de autenticação aqui
-app.UseMiddleware<AuthMiddleware>(); // Registre seu middleware aqui
+app.UseMiddleware<AuthMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); 
-    app.UseSwaggerUI(c => 
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
         c.RoutePrefix = string.Empty; 
@@ -63,7 +70,7 @@ app.MapPost("/login", async (LoginRequest loginRequest, AuthService authService,
     
     if (user == null || user.Senha != loginRequest.Senha) 
     {
-        return Results.Unauthorized(); 
+        return Results.Unauthorized();
     }
 
     var token = authService.Generate(user);
