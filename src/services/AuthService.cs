@@ -1,23 +1,20 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using ApiCotas.Cotas;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ApiCotas.Cotas;
 
 public class AuthService
 {
-    private readonly byte[] key = new byte[32];
-    private readonly string base64Key;
+    private readonly string key; 
 
-    public AuthService()
+    public AuthService(string key)
     {
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(key); 
-        }
-        base64Key = Convert.ToBase64String(key); 
+        this.key = key;
     }
 
+    public string Key => key;
+    
     public string Generate(UserEntity user)
     {
         if (user == null)
@@ -36,7 +33,7 @@ public class AuthService
         }
 
         var handler = new JwtSecurityTokenHandler();
-        var signingKey = new SymmetricSecurityKey(key); 
+        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -52,30 +49,5 @@ public class AuthService
 
         var token = handler.CreateToken(tokenDescriptor);
         return handler.WriteToken(token);
-    }
-
-    public static ClaimsIdentity GenerateClaims(UserEntity user)
-    {
-        var ci = new ClaimsIdentity();
-        ci.AddClaim(new Claim(ClaimTypes.Name, user.Nome));
-
-       
-        if (!string.IsNullOrEmpty(user.Roles))
-        {
-            var roles = user.Roles.Split(','); 
-            foreach (var role in roles)
-            {
-                ci.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
-            }
-        }
-
-        return ci;
-    }
-    
-    public UserEntity ValidateUser(string email, string senha, List<UserEntity> users) 
-    {
-        
-        var user = users.FirstOrDefault(u => u.Email == email && u.Senha == senha);
-        return user; 
     }
 }
