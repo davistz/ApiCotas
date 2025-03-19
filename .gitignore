@@ -13,13 +13,14 @@ project.nuget.cache
 *.nuget.g.props
 *.nuget.g.targets
 *.dgspec.json
- 
+
+%SystemDrive% 
+
 .vs/
 .vscode/
 *.code-workspace
 .idea/
  
- %SystemDrive%
 
 .env
 appsettings.Development.json
