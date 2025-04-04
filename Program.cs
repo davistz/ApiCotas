@@ -4,9 +4,9 @@ using ApiCotas.Users;
 using dataContext;
 using Microsoft.EntityFrameworkCore;
 using ApiCotas.Middlewares;
+using Microsoft.OpenApi.Models; // Importar o namespace necessário para OpenApi
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 Console.WriteLine($"Chave JWT: {jwtKey}");
@@ -16,8 +16,36 @@ if (string.IsNullOrEmpty(jwtKey))
 }
 builder.Services.AddSingleton(new AuthService(jwtKey));
 
+// Adiciona serviços do Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Minha API", Version = "v1" });
+
+    // Configura a segurança do JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Insira o token JWT no formato 'Bearer {token}'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 builder.Services.AddCors(options =>
 {
@@ -48,27 +76,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
-        c.RoutePrefix = string.Empty; 
+        c.RoutePrefix = string.Empty; // Define a página inicial do Swagger
     });
 }
-
-app.MapGet("/token", (AuthService authService) =>
-{
-    var user = new UserEntity
-    {
-        Nome = "UsuarioPadrao",
-        Id = "testeid"
-    };
-
-    var token = authService.Generate(user);
-    return Results.Ok(new { Token = token });
-});
 
 app.MapPost("/login", async (LoginRequest loginRequest, AuthService authService, DataContext context) =>
 {
     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
-    
-    if (user == null || user.Senha != loginRequest.Senha) 
+
+    if (user == null || user.Senha != loginRequest.Senha)
     {
         return Results.Unauthorized();
     }

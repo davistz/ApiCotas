@@ -40,8 +40,6 @@ public class GrupoEntity
     public string CriadorId { get; set; }
     
     [Column("nome_criador")] 
-    
-    
     public string CriadorNome { get; set; }
     
     public virtual UserEntity Criador { get; set; } 

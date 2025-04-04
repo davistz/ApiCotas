@@ -1,14 +1,11 @@
-﻿# Ignorar diretórios de build
-bin/
+﻿bin/
 obj/
 
-# Ignorar arquivos de usuário do Visual Studio e Rider
 *.user
 *.userosscache
 *.sln.DotSettings.user
 *.sln.docstates
 
-# Ignorar arquivos de cache do NuGet
 project.nuget.cache
 *.nuget.g.props
 *.nuget.g.targets

@@ -37,7 +37,7 @@ public static class CotasController
             return Results.Created($"/grupos/{consorcioId}/cotas/{novaCota.Id}", cotaRetorno);
         });
         
-        rotasCotas.MapGet("/grupos/cotas", async (DataContext context, CancellationToken ct) =>
+        rotasCotas.MapGet("/cotas", async (DataContext context, CancellationToken ct) =>
         {
             var cotas = await context
                 .Cotas
@@ -47,7 +47,7 @@ public static class CotasController
             return Results.Ok(cotas);
         });
 
-        rotasCotas.MapPut("/grupos/cotas/{id}", async (String id, CotaRequest request, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapPut("/cotas/{id}", async (String id, CotaRequest request, DataContext context, CancellationToken ct) =>
         {
             var cota = await context.Cotas
                 .SingleOrDefaultAsync(cota => cota.Id == id);
@@ -63,7 +63,7 @@ public static class CotasController
             return Results.Ok(new CotaDTO(cota.Id, cota.ConsorcioId, cota.NumeroCota, cota.Valor));
         });
 
-        rotasCotas.MapDelete("/grupos/cotas/{id}", async (String id, DataContext context, CancellationToken ct) =>
+        rotasCotas.MapDelete("/cotas/{id}", async (String id, DataContext context, CancellationToken ct) =>
         {
             var cota = await context.Cotas.SingleOrDefaultAsync(cota => cota.Id == id);
             

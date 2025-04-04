@@ -25,19 +25,19 @@ public static class ConsorcioController
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
             var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId"); 
-            var userNameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserName");
+            var usernameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserName");
             
             if (userIdClaim == null)
             {
                 return Results.Unauthorized();
             }
-            if (userNameClaim == null)
+            if (usernameClaim == null)
             {
                 return Results.Unauthorized();
             }
             
             var userId = userIdClaim.Value;
-            var userName = userNameClaim.Value;
+            var userName = usernameClaim.Value;
             
             var usuario = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
             if (usuario == null)
@@ -58,7 +58,6 @@ public static class ConsorcioController
             
             await context.Consorcios.AddAsync(novoConsorcio, ct);
             await context.SaveChangesAsync(ct);
-            usuario.GruposCriados.Add(novoConsorcio);
 
 
             var consorcioRetorno = new ConsorcioDTO(novoConsorcio.Id, novoConsorcio.Nome, novoConsorcio.ValorTotal,
@@ -103,7 +102,18 @@ public static class ConsorcioController
             consorcio.DataUpdate = DateTime.UtcNow;
 
             await context.SaveChangesAsync(ct);
-            return Results.Ok(consorcio);
+            
+            var consorcioRetorno = new 
+            {
+                consorcio.Id,
+                consorcio.Nome,
+                consorcio.ValorTotal,
+                consorcio.NumeroParticipantes,
+                consorcio.DataCreate,
+                consorcio.DataUpdate
+            };
+    
+            return Results.Ok(consorcioRetorno);
         });
 
         rotasConsorcios.MapDelete("/grupo/{id}", async (string id, DataContext context, CancellationToken ct) =>

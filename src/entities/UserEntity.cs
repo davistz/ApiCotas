@@ -44,6 +44,5 @@ public class UserEntity
         
     }
     
-    
-    public virtual ICollection<GrupoEntity> GruposCriados { get; set; } = new List<GrupoEntity>();
+
 }
