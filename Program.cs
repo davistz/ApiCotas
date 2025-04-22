@@ -4,7 +4,7 @@ using ApiCotas.Users;
 using dataContext;
 using Microsoft.EntityFrameworkCore;
 using ApiCotas.Middlewares;
-using Microsoft.OpenApi.Models; // Importar o namespace necessário para OpenApi
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,13 +16,11 @@ if (string.IsNullOrEmpty(jwtKey))
 }
 builder.Services.AddSingleton(new AuthService(jwtKey));
 
-// Adiciona serviços do Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Minha API", Version = "v1" });
 
-    // Configura a segurança do JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -76,7 +74,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
-        c.RoutePrefix = string.Empty; // Define a página inicial do Swagger
+        c.RoutePrefix = string.Empty;
     });
 }
 
