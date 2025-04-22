@@ -49,6 +49,7 @@ public static class ConsorcioController
             {
                 Nome = request.Nome,
                 ValorTotal = request.ValorTotal,
+                Tempo = request.Tempo,
                 NumeroParticipantes = request.NumeroParticipantes,
                 DataCreate = DateTime.UtcNow,
                 DataUpdate = DateTime.UtcNow,
@@ -60,7 +61,7 @@ public static class ConsorcioController
             await context.SaveChangesAsync(ct);
 
 
-            var consorcioRetorno = new ConsorcioDTO(novoConsorcio.Id, novoConsorcio.Nome, novoConsorcio.ValorTotal,
+            var consorcioRetorno = new ConsorcioDTO(novoConsorcio.Id, novoConsorcio.Nome, novoConsorcio.ValorTotal, novoConsorcio.Tempo,
                 novoConsorcio.NumeroParticipantes, novoConsorcio.CriadorNome, novoConsorcio.CriadorId);
     
             return Results.Created($"/grupo/{novoConsorcio.Id}", consorcioRetorno);
@@ -75,6 +76,7 @@ public static class ConsorcioController
                     consorcio.Id,
                     consorcio.Nome,
                     consorcio.ValorTotal,
+                    consorcio.Tempo,
                     consorcio.NumeroParticipantes,
                     consorcio.CriadorId,
                     consorcio.CriadorNome,
@@ -108,6 +110,7 @@ public static class ConsorcioController
                 consorcio.Id,
                 consorcio.Nome,
                 consorcio.ValorTotal,
+                consorcio.Tempo,
                 consorcio.NumeroParticipantes,
                 consorcio.DataCreate,
                 consorcio.DataUpdate

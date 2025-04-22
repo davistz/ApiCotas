@@ -1,3 +1,2 @@
 ﻿namespace ApiCotas;
-
-public record GrupoRequest(string Nome, decimal ValorTotal, int NumeroParticipantes);
+  public record GrupoRequest(string Nome, double Tempo, decimal ValorTotal, int NumeroParticipantes);

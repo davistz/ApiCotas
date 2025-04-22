@@ -47,6 +47,19 @@ public static class CotasController
             return Results.Ok(cotas);
         });
 
+        rotasCotas.MapGet("/cotas/{id}", async (string id, DataContext context, CancellationToken ct) =>
+        {
+            var cota = await context.Cotas
+                .SingleOrDefaultAsync(c => c.Id == id, ct);
+
+            if (cota == null)
+            {
+                return Results.NotFound("Cota não encontrada.");
+            }
+
+            return Results.Ok(new CotaDTO(cota.Id, cota.ConsorcioId, cota.NumeroCota, cota.Valor));
+        });
+
         rotasCotas.MapPut("/cotas/{id}", async (String id, CotaRequest request, DataContext context, CancellationToken ct) =>
         {
             var cota = await context.Cotas

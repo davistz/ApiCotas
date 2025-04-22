@@ -38,7 +38,22 @@ public static class UserController
                 .ToListAsync(ct);
             return Results.Ok(users);
         });
-        
+
+        userRotas.MapGet("/users/{id}", async (string id, DataContext context, CancellationToken ct) =>
+        {
+            var user = await context.Users
+                .Where(u => u.Id == id)
+                .Select(u => new UserDTO(u.Id, u.Nome, u.Email, u.Senha))
+                .FirstOrDefaultAsync(ct);
+
+            if (user == null)
+            {
+                return Results.NotFound("Usuário não encontrado.");
+            }
+
+            return Results.Ok(user);
+        });
+
 
         userRotas.MapPut("/users/{id}", async (String id, UserRequest request, DataContext context, CancellationToken ct) =>
         {

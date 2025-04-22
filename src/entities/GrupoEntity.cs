@@ -29,7 +29,10 @@ public class GrupoEntity
     
     [Column("numero_participantes")]
     public int NumeroParticipantes { get; set; }
-    
+
+    [Column("tempo")]
+    public double Tempo { get; set; }
+
     [Column("data_create")]
     public DateTime DataCreate { get; init; }
     
